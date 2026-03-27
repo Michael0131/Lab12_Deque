@@ -15,7 +15,7 @@
  *        deque                 : A class that represents a deque
  *        deque::iterator       : An iterator through a deque
  * Author
- *    <your names here>
+ *    Michael, James, Brayden
  ************************************************************************/
 
 #pragma once
