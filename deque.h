@@ -336,6 +336,19 @@ namespace custom
     template <class T>
     deque <T> ::deque(const deque <T>& rhs)
     {
+        numCapacity = rhs.numCapacity;
+        numElements = rhs.numElements;
+        iaFront     = 0;
+
+        if (numCapacity == 0)
+        {
+            data = nullptr;
+            return;
+        }
+
+        data = new T[numCapacity];
+        for (size_t i = 0; i < numElements; ++i)
+            data[i] = rhs[i];
     }
 
 
@@ -346,7 +359,25 @@ namespace custom
     template <class T>
     deque <T>& deque <T> :: operator = (const deque <T>& rhs)
     {
-        return *this;
+        if (this == &rhs)
+            return* this;
+        
+        T* newData = nullptr; // allocate new container first
+        if (rhs.numCapacity != 0)
+        {
+            newData = new T[rhs.numCapacity]; // copy capacity
+            for (size_t i = 0; i < rhs.numElements; ++i)
+            {
+                newData[i] = rhs[i]; // copy elements
+            }
+        }
+
+        // Delete old, update
+        delete[] data;
+        data        = newData;
+        numCapacity = rhs.numCapacity;
+        numElements = rhs.numElements;
+        iaFront     = 0;
     }
 
 
@@ -431,6 +462,13 @@ namespace custom
     template <class T>
     void deque <T> ::pop_front()
     {
+        assert(numElements > 0);
+
+        iaFront = (iaFront + 1) % numCapacity;
+        --numElements;
+
+        if (numElements == 0)
+            iaFront = 0;
     }
 
     /******************************************************
@@ -440,6 +478,9 @@ namespace custom
     template <class T>
     void deque <T> ::push_back(const T& t)
     {
+        if (numElements == numCapacity)
+            resize(numCapacity == 0 ? 1 : numCapacity * 2);
+        data[iaFromID(numElements++)] = t;
     }
 
     /******************************************************
