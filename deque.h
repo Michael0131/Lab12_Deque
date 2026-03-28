@@ -50,7 +50,6 @@ namespace custom
         // Construct
         //
 
-        // ---------- Michael Code to Complete ----------
         deque()
         {
             data = nullptr;
@@ -59,10 +58,8 @@ namespace custom
             iaFront = 0;
         }
 
-        // ---------- Michael Code to Complete ----------
         deque(int newCapacity);
 
-        // ---------- Michael / Brayden Code to Complete ----------
         deque(const deque <T>& rhs);
 
         ~deque()
@@ -78,23 +75,19 @@ namespace custom
         // Assign
         //
 
-        // ---------- Brayden Code to Complete ----------
         deque<T>& operator = (const deque <T>& rhs);
 
         //
         // Iterator
         //
 
-        // ---------- Michael Code to Complete ----------
         class iterator;
 
-        // ---------- Michael Code to Complete ----------
         iterator begin()
         {
             return iterator(this, 0);
         }
 
-        // ---------- Michael Code to Complete ----------
         iterator end()
         {
             return iterator(this, (int)numElements);
@@ -104,39 +97,30 @@ namespace custom
         // Access
         //
 
-        // ---------- Brayden Code to Complete ----------
         T& front();
 
-        // ---------- James Code to Complete ----------
         T& back();
 
-        // ---------- Brayden Code to Complete ----------
         const T& front() const;
 
-        // ---------- James Code to Complete ----------
         const T& back()  const;
 
-        // ---------- Michael Code to Complete ----------
         const T& operator[](size_t index) const;
 
-        // ---------- Michael Code to Complete ----------
         T& operator[](size_t index);
 
         //
         // Insert
         //
 
-        // ---------- Brayden Code to Complete ----------
         void push_front(const T& t);
 
-        // ---------- James Code to Complete ----------
         void push_back(const T& t);
 
         //
         // Remove
         //
 
-        // ---------- Michael Code to Complete ----------
         void clear()
         {
             delete[] data;
@@ -146,23 +130,19 @@ namespace custom
             iaFront = 0;
         }
 
-        // ---------- Brayden Code to Complete ----------
         void pop_front();
 
-        // ---------- Michael Code to Complete ----------
         void pop_back();
 
         //
         // Status
         //
 
-        // ---------- Michael Code to Complete ----------
         size_t size() const
         {
             return numElements;
         }
 
-        // ---------- Michael Code to Complete ----------
         bool empty() const
         {
             return numElements == 0;
@@ -171,7 +151,6 @@ namespace custom
     private:
 
         // fetch array index from the deque index
-        // ---------- Michael Code to Complete ----------
         int iaFromID(int id) const
         {
             if (numCapacity == 0)
@@ -182,11 +161,9 @@ namespace custom
             return (front + id) % (int)numCapacity;
         }
 
-        // ---------- Brayden Code to Complete ----------
         void resize(int newCapacity = 0);
 
         // member variables
-        // ---------- Michael Code to Complete ----------
         T* data;           // dynamically allocated data for the deque
         size_t numCapacity; // the size of the data array
         size_t numElements; // number of elements in the deque
@@ -208,21 +185,18 @@ namespace custom
         // Construct
         //
 
-        // ---------- Michael Code to Complete ----------
         iterator()
         {
             id = 0;
             pDeque = nullptr;
         }
 
-        // ---------- Michael Code to Complete ----------
         iterator(custom::deque<T>* pDeque, int id)
         {
             this->pDeque = pDeque;
             this->id = id;
         }
 
-        // ---------- Michael Code to Complete ----------
         iterator(const iterator& rhs)
         {
             pDeque = rhs.pDeque;
@@ -233,7 +207,6 @@ namespace custom
         // Assign
         //
 
-        // ---------- Michael Code to Complete ----------
         iterator& operator = (const iterator& rhs)
         {
             pDeque = rhs.pDeque;
@@ -245,23 +218,19 @@ namespace custom
         // Compare
         //
 
-        // ---------- Michael Code to Complete ----------
         bool operator == (const iterator& rhs) const { return pDeque == rhs.pDeque && id == rhs.id; }
 
-        // ---------- Michael Code to Complete ----------
         bool operator != (const iterator& rhs) const { return !(*this == rhs); }
 
         //
         // Access
         //
 
-        // ---------- James Code to Complete ----------
         const T& operator * () const
         {
             return (*pDeque)[id];
         }
 
-        // ---------- James Code to Complete ----------
         T& operator * ()
         {
             return (*pDeque)[id];
@@ -271,28 +240,24 @@ namespace custom
         // Arithmetic
         //
 
-        // ---------- James Code to Complete ----------
         int operator - (iterator it) const
         {
             
             return this->id - it.id;
         }
 
-        // ---------- James Code to Complete ----------
         iterator& operator += (int offset)
         {
             id = id + offset;
             return *this;
         }
 
-        // ---------- James Code to Complete ----------
         iterator& operator ++ ()
         {
             ++id;
             return *this;
         }
 
-        // ---------- James Code to Complete ----------
         iterator operator ++ (int postfix)
         {
             iterator tmp(*this);
@@ -300,14 +265,12 @@ namespace custom
             return tmp;
         }
 
-        // ---------- James Code to Complete ----------
         iterator& operator -- ()
         {
             --id;
             return *this;
         }
 
-        // ---------- James Code to Complete ----------
         iterator operator -- (int postfix)
         {
             iterator tmp(*this);
@@ -318,7 +281,6 @@ namespace custom
     private:
 
         // Member variables
-        // ---------- Michael Code to Complete ----------
         int id;             // deque index
         deque<T>* pDeque;
     };
@@ -327,7 +289,6 @@ namespace custom
     /****************************************************
      * DEQUE : CONSTRUCTOR - non-default
      ***************************************************/
-     // ---------- Michael Code to Complete ----------
     template <class T>
     deque <T> ::deque(int newCapacity)
     {
@@ -340,7 +301,6 @@ namespace custom
     /****************************************************
      * DEQUE : CONSTRUCTOR - copy
      ***************************************************/
-     // ---------- Brayden Code to Complete ----------
     template <class T>
     deque <T> ::deque(const deque <T>& rhs)
     {
@@ -363,29 +323,30 @@ namespace custom
     /****************************************************
      * DEQUE : ASSIGNMENT OPERATOR
      ***************************************************/
-     // ---------- Brayden Code to Complete ----------
     template <class T>
     deque <T>& deque <T> :: operator = (const deque <T>& rhs)
     {
         if (this == &rhs)
-            return* this;
+            return *this;
         
-        T* newData = nullptr; // allocate new container first
-        if (rhs.numCapacity != 0)
+        // grow only if needed (never shrink)
+        if (numCapacity < rhs.numCapacity)
         {
-            newData = new T[rhs.numCapacity]; // copy capacity
-            for (size_t i = 0; i < rhs.numElements; ++i)
-            {
-                newData[i] = rhs[i]; // copy elements
-            }
+            delete[] data; // delete old storage; updating capacity
+            data = nullptr;
+            numCapacity = rhs.numCapacity;
+            // allocate storage if capacity > 0; otherwise represent empty buffer as nullptr
+            data = (numCapacity ? new T[numCapacity] : nullptr);
         }
 
-        // Delete old, update
-        delete[] data;
-        data        = newData;
-        numCapacity = rhs.numCapacity;
+        // copy elements in logical deque order (unwrap rhs)
+        for (size_t i = 0; i < rhs.numElements; ++i)
+            data[i] = rhs[i];
+
         numElements = rhs.numElements;
-        iaFront     = 0;
+        iaFront = 0;
+
+        return *this;
     }
 
 
@@ -393,7 +354,6 @@ namespace custom
      * DEQUE :: FRONT
      * Fetch the item that is at the beginning of the deque
      *************************************************/
-     // ---------- Brayden Code to Complete ----------
     template <class T>
     const T& deque <T> ::front() const
     {
@@ -404,7 +364,6 @@ namespace custom
         return data[iaFromID(0)];
     }
 
-    // ---------- Brayden Code to Complete ----------
     template <class T>
     T& deque <T> ::front()
     {
@@ -416,7 +375,6 @@ namespace custom
      * DEQUE :: BACK
      * Fetch the item that is at the end of the deque
      *************************************************/
-     // ---------- James Code to Complete ----------
     template <class T>
     const T& deque <T> ::back() const
     {
@@ -424,7 +382,6 @@ namespace custom
         return data[iaFromID(numElements - 1)];
     }
 
-    // ---------- James Code to Complete ----------
     template <class T>
     T& deque <T> ::back()
     {
@@ -436,14 +393,12 @@ namespace custom
      * DEQUE :: SUBSCRIPT
      * Fetch the item in the deque
      ***************************************************/
-     // ---------- Michael Code to Complete ----------
     template <class T>
     const T& deque <T> ::operator[](size_t index) const
     {
         return data[iaFromID((int)index)];
     }
 
-    // ---------- Michael Code to Complete ----------
     template <class T>
     T& deque <T> ::operator[](size_t index)
     {
@@ -453,7 +408,6 @@ namespace custom
     /*****************************************************
      * DEQUE : POP_BACK
      *****************************************************/
-     // ---------- Michael Code to Complete ----------
     template <class T>
     void deque <T> ::pop_back()
     {
@@ -468,7 +422,6 @@ namespace custom
     /*****************************************************
      * DEQUE : POP_FRONT
      *****************************************************/
-     // ---------- Brayden Code to Complete ----------
     template <class T>
     void deque <T> ::pop_front()
     {
@@ -484,7 +437,6 @@ namespace custom
     /******************************************************
      * DEQUE : PUSH_BACK
      ******************************************************/
-     // ---------- James Code to Complete ----------
     template <class T>
     void deque <T> ::push_back(const T& t)
     {
@@ -496,7 +448,6 @@ namespace custom
     /******************************************************
      * DEQUE : PUSH_FRONT
      ******************************************************/
-     // ---------- Brayden Code to Complete ----------
     template <class T>
     void deque <T> ::push_front(const T& t)
     {
@@ -519,7 +470,6 @@ namespace custom
      * DEQUE :: RESIZE
      * Resize the deque so the numCapacity matches the newCapacity
      ***************************************************/
-     // ---------- Brayden Code to Complete ----------
     template <class T>
     void deque <T> ::resize(int newCapacity)
     {
@@ -534,6 +484,7 @@ namespace custom
         }
 
         delete[] data; // Delete old data
+        data = nullptr;
         data = newData; // Update data
         numCapacity = newCapacity;
         iaFront = 0;
