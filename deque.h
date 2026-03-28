@@ -258,13 +258,13 @@ namespace custom
         // ---------- James Code to Complete ----------
         const T& operator * () const
         {
-            return *(new T);
+            return (*pDeque)[id];
         }
 
         // ---------- James Code to Complete ----------
         T& operator * ()
         {
-            return *(new T);
+            return (*pDeque)[id];
         }
 
         //
@@ -274,37 +274,45 @@ namespace custom
         // ---------- James Code to Complete ----------
         int operator - (iterator it) const
         {
-            return 99;
+            
+            return this->id - it.id;
         }
 
         // ---------- James Code to Complete ----------
         iterator& operator += (int offset)
         {
+            id = id + offset;
             return *this;
         }
 
         // ---------- James Code to Complete ----------
         iterator& operator ++ ()
         {
+            ++id;
             return *this;
         }
 
         // ---------- James Code to Complete ----------
         iterator operator ++ (int postfix)
         {
-            return *this;
+            iterator tmp(*this);
+            ++(*this);
+            return tmp;
         }
 
         // ---------- James Code to Complete ----------
         iterator& operator -- ()
         {
+            --id;
             return *this;
         }
 
         // ---------- James Code to Complete ----------
         iterator operator -- (int postfix)
         {
-            return *this;
+            iterator tmp(*this);
+            --id;
+            return tmp;
         }
 
     private:
@@ -376,14 +384,16 @@ namespace custom
     template <class T>
     const T& deque <T> ::back() const
     {
-        return* (new T);
+        assert(numElements != 0);
+        return data[iaFromID(numElements - 1)];
     }
 
     // ---------- James Code to Complete ----------
     template <class T>
     T& deque <T> ::back()
     {
-        return *(new T);
+        assert(numElements != 0);
+        return data[iaFromID(numElements - 1)];
     }
 
     /**************************************************
@@ -435,6 +445,9 @@ namespace custom
     template <class T>
     void deque <T> ::push_back(const T& t)
     {
+        if (numElements == numCapacity)
+           resize(numCapacity == 0 ? 1 : numCapacity * 2);
+        data[iaFromID(numElements++)] = t;
     }
 
     /******************************************************
@@ -454,6 +467,15 @@ namespace custom
     template <class T>
     void deque <T> ::resize(int newCapacity)
     {
+         //assert(newCapacity > 0 && newCapacity > numElements);
+         T* dataNew = new T[newCapacity];
+         for (int id = 0; id < numElements; id++)
+            dataNew[id] = (*this)[id];
+
+         numCapacity = newCapacity;
+         iaFront = 0;
+         delete data;
+         data = dataNew;
     }
 
 } // namespace custom
