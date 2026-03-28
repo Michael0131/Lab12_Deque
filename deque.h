@@ -358,14 +358,19 @@ namespace custom
     template <class T>
     const T& deque <T> ::front() const
     {
-        return *(new T);
+        assert(numElements != 0);
+
+        // Return the first element by converting id to ia 
+        // to access the element in the array
+        return data[iaFromID(0)];
     }
 
     // ---------- Brayden Code to Complete ----------
     template <class T>
     T& deque <T> ::front()
     {
-        return *(new T);
+        assert(numElements != 0);
+        return data[iaFromID(0)];
     }
 
     /**************************************************
@@ -444,6 +449,19 @@ namespace custom
     template <class T>
     void deque <T> ::push_front(const T& t)
     {
+        // Empty deque
+        if (numCapacity == 0)
+            resize(1);
+        // Full (must grow)
+        else if (numElements == numCapacity)
+            resize(numCapacity * 2);
+
+        // Room left
+        // Move iaFront one step left
+        iaFront = (iaFront + numCapacity - 1) % numCapacity;
+        // Add t to new front position
+        data[iaFront] = t;
+        ++numElements;
     }
 
     /****************************************************
@@ -454,6 +472,20 @@ namespace custom
     template <class T>
     void deque <T> ::resize(int newCapacity)
     {
+        assert(newCapacity >= (int)numElements);
+
+        // Allocate a new container
+        T* newData = new T[newCapacity];
+        // Unwrap
+        for (size_t i = 0; i < numElements; ++i)
+        {
+            newData[i] = (*this)[i];
+        }
+
+        delete[] data; // Delete old data
+        data = newData; // Update data
+        numCapacity = newCapacity;
+        iaFront = 0;
     }
 
 } // namespace custom
